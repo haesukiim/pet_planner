@@ -29,5 +29,10 @@ buildscript {
         classpath 'com.android.tools.build:gradle:7.4.2' // Gradle Plugin 버전
         classpath 'com.google.gms:google-services:4.3.15' // Firebase Plugin
     }
+    ext {
+        compileSdkVersion = 33
+        targetSdkVersion = 33
+        minSdkVersion = 23 // 여기도 23 이상으로 설정
+    }
 }
 
