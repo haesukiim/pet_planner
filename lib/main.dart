@@ -15,6 +15,9 @@ import 'package:firebase_core/firebase_core.dart'; // Firebase Core 패키지 �
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //print("qwer");
+  //print(await KakaoSdk.origin);
+  //print("qwer");
   await Firebase.initializeApp(); // Firebase 초기화
   KakaoSdk.init(nativeAppKey: '47a25dc57afe7b5126953a1a7d10b405');
   runApp(const MyApp());
