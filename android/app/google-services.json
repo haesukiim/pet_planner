@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "196679606078",
+    "project_id": "petplanner-e246e",
+    "storage_bucket": "petplanner-e246e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196679606078:android:b3020e1507ca03e349966f",
+        "android_client_info": {
+          "package_name": "com.example.petplan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAt5LIX1fhdv_bcKUU-lG9YZxMamwMlcV8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

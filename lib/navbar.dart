@@ -19,11 +19,7 @@ class BottomNavBar extends StatelessWidget {
             'assets/img/calendar.png',
             width: 24,
             height: 24,
-          ),
-          activeIcon: Image.asset(
-            'assets/img/calendar.png',
-            width: 24,
-            height: 24,
+            color: selectedIndex == 0 ? const Color(0xFFFF8C00) : Colors.grey, // 아이콘 색상 변화
           ),
           label: '캘린더',
         ),
@@ -32,11 +28,7 @@ class BottomNavBar extends StatelessWidget {
             'assets/img/booking.png',
             width: 24,
             height: 24,
-          ),
-          activeIcon: Image.asset(
-            'assets/img/booking.png',
-            width: 24,
-            height: 24,
+            color: selectedIndex == 1 ? const Color(0xFFFF8C00) : Colors.grey, // 아이콘 색상 변화
           ),
           label: '예약',
         ),
@@ -45,11 +37,7 @@ class BottomNavBar extends StatelessWidget {
             'assets/img/community.png',
             width: 24,
             height: 24,
-          ),
-          activeIcon: Image.asset(
-            'assets/img/community.png',
-            width: 24,
-            height: 24,
+            color: selectedIndex == 2 ? const Color(0xFFFF8C00) : Colors.grey, // 아이콘 색상 변화
           ),
           label: '커뮤니티',
         ),
@@ -58,21 +46,19 @@ class BottomNavBar extends StatelessWidget {
             'assets/img/mypage.png',
             width: 24,
             height: 24,
-          ),
-          activeIcon: Image.asset(
-            'assets/img/mypage.png',
-            width: 24,
-            height: 24,
+            color: selectedIndex == 3 ? const Color(0xFFFF8C00) : Colors.grey, // 아이콘 색상 변화
           ),
           label: '마이페이지',
         ),
       ],
       currentIndex: selectedIndex,
-      selectedItemColor: Colors.black,
-      unselectedItemColor: Colors.grey,
+      selectedItemColor: const Color(0xFFFF8C00), // 선택된 글씨 색상
+      unselectedItemColor: Colors.grey, // 선택되지 않은 글씨 색상
       onTap: onItemTapped,
       type: BottomNavigationBarType.fixed,
-      backgroundColor: Color(0xFFFFFAF0), // 배경 색상 설정
+      backgroundColor: const Color(0xFFFFFAF0), // 배경 색상 설정
+      selectedLabelStyle: const TextStyle(fontSize: 12), // 글씨 크기 고정
+      unselectedLabelStyle: const TextStyle(fontSize: 12), // 글씨 크기 고정
     );
   }
 }

@@ -1,3 +1,4 @@
+// 기존 코드 유지
 allprojects {
     repositories {
         google()
@@ -16,3 +17,17 @@ subprojects {
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
+
+// 여기에 추가:
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // Firebase Google Services Gradle Plugin 추가
+        classpath 'com.android.tools.build:gradle:7.4.2' // Gradle Plugin 버전
+        classpath 'com.google.gms:google-services:4.3.15' // Firebase Plugin
+    }
+}
+
