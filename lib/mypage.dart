@@ -1,57 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'start.dart';
 import 'logout.dart';
 
-class MypageScreen extends StatelessWidget {
-
+class MypageScreen extends StatefulWidget {
   const MypageScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final User? user = FirebaseAuth.instance.currentUser;
+  State<MypageScreen> createState() => _MypageScreenState();
+}
 
+class _MypageScreenState extends State<MypageScreen> {
+  Map<String, dynamic>? userData; // 사용자 데이터 저장
+  final String? uid = FirebaseAuth.instance.currentUser?.uid; // Firebase UID 가져오기
+
+  @override
+  void initState() {
+    super.initState();
+    if (uid != null) {
+      _loadUserData(uid!);
+    }
+  }
+
+  Future<void> _loadUserData(String uid) async {
+    try {
+      final docRef = FirebaseFirestore.instance.collection('users').doc(uid);
+      final userDoc = await docRef.get();
+
+      if (userDoc.exists) {
+        setState(() {
+          userData = userDoc.data();
+        });
+      } else {
+        debugPrint("Firestore에서 해당 UID의 데이터를 찾을 수 없습니다: $uid");
+      }
+    } catch (e) {
+      debugPrint("Firestore 데이터 로드 에러: $e");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
+        title: const Text(
           '프로필',
           style: TextStyle(
             color: Colors.black,
           ),
         ),
-
-        backgroundColor: Color(0xFFFFFAF0),
+        backgroundColor: const Color(0xFFFFFAF0),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings),
             onPressed: () {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('설정'),
-                    content: Text('로그아웃 하시겠습니까?'),
+                    title: const Text('설정'),
+                    content: const Text('로그아웃 하시겠습니까?'),
                     actions: [
                       TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text(
+                        child: const Text(
                           '취소',
                           style: TextStyle(color: Colors.orange),
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () async{
+                        onPressed: () async {
                           await LogoutServie.signOut();
                           Navigator.pushAndRemoveUntil(
                             context,
-                            MaterialPageRoute(builder: (context) => StartScreen()), //로그아웃 성공
+                            MaterialPageRoute(
+                                builder: (context) => StartScreen()), // 로그아웃 성공
                                 (route) => false,
                           );
                         },
-                        child: Text(
+                        child: const Text(
                           '로그아웃',
                           style: TextStyle(color: Colors.orange),
                         ),
@@ -64,20 +95,21 @@ class MypageScreen extends StatelessWidget {
           ),
         ],
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
+        child: userData == null
+            ? const Center(child: CircularProgressIndicator()) // 데이터 로드 중
+            : ListView(
           children: [
             // 프로필 섹션
             Row(
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundImage: user?.photoURL != null
-                      ? NetworkImage(user!.photoURL!)
+                  backgroundImage: userData?['photoURL'] != null
+                      ? NetworkImage(userData!['photoURL'])
                       : null,
-                  child: user?.photoURL == null
+                  child: userData?['photoURL'] == null
                       ? const Icon(
                     Icons.person,
                     size: 40,
@@ -90,12 +122,12 @@ class MypageScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      user?.displayName ?? '이름 없음',
+                      userData?['displayName'] ?? '이름 없음',
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      user?.email ?? '이메일 없음',
+                      userData?['email'] ?? '이메일 없음',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey[600],
@@ -106,7 +138,7 @@ class MypageScreen extends StatelessWidget {
               ],
             ),
 
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             _buildSection(
               title: '캘린더',
               children: [
@@ -117,7 +149,8 @@ class MypageScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => EmptyScreen(title: "일정 추가"),
+                        builder: (context) =>
+                        const EmptyScreen(title: "일정 추가"),
                       ),
                     );
                   },
@@ -135,7 +168,8 @@ class MypageScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => EmptyScreen(title: "호텔 예약"),
+                        builder: (context) =>
+                        const EmptyScreen(title: "호텔 예약"),
                       ),
                     );
                   },
@@ -153,7 +187,8 @@ class MypageScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => EmptyScreen(title: "나의 게시글"),
+                        builder: (context) =>
+                        const EmptyScreen(title: "나의 게시글"),
                       ),
                     );
                   },
@@ -165,7 +200,8 @@ class MypageScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => EmptyScreen(title: "작성 댓글"),
+                        builder: (context) =>
+                        const EmptyScreen(title: "작성 댓글"),
                       ),
                     );
                   },
@@ -177,14 +213,14 @@ class MypageScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => EmptyScreen(title: "좋아요한 게시글"),
+                        builder: (context) =>
+                        const EmptyScreen(title: "좋아요한 게시글"),
                       ),
                     );
                   },
                 ),
               ],
             ),
-
           ],
         ),
       ),
@@ -197,13 +233,13 @@ class MypageScreen extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18,
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         ...children,
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
       ],
     );
   }
@@ -214,16 +250,16 @@ class MypageScreen extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return ListTile(
-      contentPadding: EdgeInsets.only(left: 12, right: 0),
+      contentPadding: const EdgeInsets.only(left: 12, right: 0),
       leading: Icon(
         icon,
         size: 32,
       ),
       title: Text(
         title,
-        style: TextStyle(fontSize: 16),
+        style: const TextStyle(fontSize: 16),
       ),
-      trailing: Icon(
+      trailing: const Icon(
         Icons.chevron_right,
         color: Colors.grey,
         size: 24,
@@ -244,11 +280,11 @@ class EmptyScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           title,
-          style: TextStyle(color: Colors.orange),
+          style: const TextStyle(color: Colors.orange),
         ),
-        backgroundColor: Color(0xFFFFFAF0),
+        backgroundColor: const Color(0xFFFFFAF0),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -257,7 +293,7 @@ class EmptyScreen extends StatelessWidget {
       body: Center(
         child: Text(
           '$title 화면',
-          style: TextStyle(fontSize: 24, color: Colors.grey),
+          style: const TextStyle(fontSize: 24, color: Colors.grey),
         ),
       ),
     );

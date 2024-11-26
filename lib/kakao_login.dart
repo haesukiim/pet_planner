@@ -12,9 +12,7 @@ class KLoginService {
 
       final kakaoUser = await _getKakaoUser(); //정보 가져오기
 
-      final userCredential = await _signInOrCreateUser(
-        kakaoUser['email'] ?? "default@kakao.com", // 기본값
-      );
+      final userCredential = await _signInOrCreateUser(kakaoUser['email']!);
 
       if (userCredential.user != null) {
         await _saveUserData(userCredential.user!, kakaoUser);
@@ -102,6 +100,23 @@ class KLoginService {
       debugPrint("Firebase Firestore에 사용자 데이터 저장 완료.");
     } catch (e) {
       debugPrint("Firestore Save Error: $e");
+    }
+  }
+
+  Future<Map<String, dynamic>?> fetchUserData(String uid) async {
+    try {
+      final docRef = FirebaseFirestore.instance.collection('users').doc(uid);
+      final userDoc = await docRef.get();
+
+      if (userDoc.exists) {
+        return userDoc.data(); // Firestore에서 가져온 사용자 데이터 반환
+      } else {
+        debugPrint("Firestore에 해당 UID의 데이터가 없습니다: $uid");
+        return null;
+      }
+    } catch (e) {
+      debugPrint("Firestore 데이터 로드 에러: $e");
+      return null;
     }
   }
 }
